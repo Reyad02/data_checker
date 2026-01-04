@@ -10,7 +10,11 @@ HIVE_API_KEY = env_vars.get("HIVE_API_KEY")
 HIVE_TEXT_URL = "https://api.thehive.ai/api/v3/hive/text-moderation"
 HIVE_VISUAL_URL = "https://api.thehive.ai/api/v3/hive/visual-moderation"
 
-THRESHOLD = 2  
+THRESHOLD_FOR_TEXT = 2 
+# 2 FOR WARNING
+# 3 FOR EXTREME
+
+THRESHOLD_FOR_VISUAL = 1
 
 BAD_TAGS_FOR_VISUAL_CONTENT = [
     "general_nsfw",
@@ -79,7 +83,7 @@ def moderate_text(text: str):
     
     bad_classes = []
     for cls in classes:
-        if cls["value"] >= THRESHOLD:
+        if cls["value"] >= THRESHOLD_FOR_TEXT:
             bad_classes.append(cls)
             
             
@@ -129,12 +133,12 @@ def moderate_visual(media_url: str):
     
     classes_more_than_threshold_value = []
     for cls in classes:
-        if cls["value"] >= THRESHOLD:
+        if cls["value"] >= THRESHOLD_FOR_VISUAL:
             classes_more_than_threshold_value.append(cls)
     
     bad_classes = []
     for cls in classes_more_than_threshold_value:
-        if cls["name"] in BAD_TAGS_FOR_VISUAL_CONTENT:
+        if cls["class"] in BAD_TAGS_FOR_VISUAL_CONTENT:
             bad_classes.append(cls)
             
         
